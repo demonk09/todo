@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <input type="text" id="t1">
+        <button onclick="add()">ADD</button>
+        <button onclick="update()" style="display: none;">UPDATE</button>
+    </div>
+    <div class="con">
+        <h1>TO-DO-LIST</h1>
+        <table id="tbl">
+
+        </table>
+        <h1>COMPLETED-LIST</h1>
+        <table id="tbl1">
+
+        </table>
+        
+    </div>
+
+    <script>
+        
+        let trf=document.getElementById('t1')
+        let x
+        let add=()=>{
+           let  todo=localStorage.getItem("todo")
+            if (todo==null) {
+                let a=[]
+                a.push(trf.value)
+                localStorage.setItem("todo",JSON.stringify(a))
+            }
+            else{
+                let a=JSON.parse(todo)
+                a.push(trf.value)
+                localStorage.setItem("todo",JSON.stringify(a))
+            }
+            trf.value=""
+            disp()
+        }
+        let disp=()=>{
+            let str=""
+            let  todo=localStorage.getItem("todo")
+           let a=JSON.parse(todo)
+           for(let i=0;i<a.length;i++){
+            str=str+`<tr><td>${a[i]}</td>
+                <td><button onclick="edit(${i})">Edit</button></td>  
+                <td><button onclick="del(${i})">Delete</button></td>  
+                <td><button onclick="comp(${i})">Complete</button></td>  `
+           }
+           document.getElementById('tbl').innerHTML=str
+        }
+
+       let del=(ind)=>{
+            let  todo=localStorage.getItem("todo")
+            let a=JSON.parse(todo)
+            a.splice(ind,1)
+            localStorage.setItem("todo",JSON.stringify(a))
+            disp()
+        }
+        let comp=(ind)=>{
+            let  todo=localStorage.getItem("todo")
+            let a=JSON.parse(todo)
+            let ctak=localStorage.getItem('comp')
+            if (ctak==null) {
+                let ct=[]
+                ct.push(a[ind])
+                localStorage.setItem("comp",JSON.stringify(ct))
+            }
+            else{
+                let ct=JSON.parse(ctak)
+                ct.push(a[ind])
+                localStorage.setItem("comp",JSON.stringify(ct))
+            }
+            a.splice(ind,1)
+            localStorage.setItem("todo",JSON.stringify(a))
+            disp()
+            compdisp()
+        }
+
+        let edit=(ind)=>{
+            let  todo=localStorage.getItem("todo")
+            let a=JSON.parse(todo)
+            trf.value=a[ind]
+            let btn=document.getElementsByTagName("button")
+            btn[0].style.display="none"
+            btn[1].style.display="inline-block"
+            x=ind
+        }
+        disp()
+
+        let update=()=>{
+            let  todo=localStorage.getItem("todo")
+            let a=JSON.parse(todo)
+            a[x]=trf.value
+            localStorage.setItem("todo",JSON.stringify(a))
+            disp()
+
+            let btn=document.getElementsByTagName("button")
+            btn[1].style.display="none"
+            btn[0].style.display="inline-block"
+            trf.value=""
+
+        }
+        disp()
+        let compdisp=()=>{
+            let str=""
+            let cmp=localStorage.getItem("comp")
+            let a=JSON.parse(cmp)
+            for(let i=0;i<a.length;i++){
+                str=str+`<tr><td>${a[i]}</td>
+                    <td><button onclick="delcomp(${i})">delete</button></td></tr>`
+            }
+            document.getElementById("tbl1").innerHTML=str   
+        }
+        delcomp=(ind)=>{
+            let cmp=localStorage.getItem("comp")
+            let a=JSON.parse(cmp)
+            a.splice(ind,1)
+            localStorage.setItem("comp",JSON.stringify(a))
+            compdisp()
+        }
+        compdisp()
+
+    </script>
+</body>
+</html>
